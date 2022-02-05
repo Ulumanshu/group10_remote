@@ -20,4 +20,18 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('jolanta')
 
+    # Pseudocode example - user login
+    """
+        If same ip logs in more than 5th time this minute:
+            Display Maximum amount of tries reached please wait message.
+        Else:
+            If username and password password check passes:
+                If user device check passes;
+                    Redirect the user to the main page with security token attached - Success!
+                Else:
+                    Redirect the user to Recaptcha robot/human check
+            Else:
+                Display try again, forgot/password message            
+    """
+
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
