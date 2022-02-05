@@ -5,7 +5,7 @@ def recursive_func(number, count):
     count = count
     if number != 0:
         print(number, count)
-        number = recursive_func(number, count + 1)
+        number = recursive_func(number - 1, count + 1)
 
     return number
 
