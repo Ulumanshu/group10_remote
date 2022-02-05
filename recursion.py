@@ -1,6 +1,10 @@
 import sys
 from functools import wraps  # Koks tikslas naudoti functools wraps - padeda, kai reikia suzinoti apgaubtos funcijos info
 from time import time
+from string import ascii_lowercase, ascii_uppercase, digits
+import random
+from pprint import pprint
+import json
 
 
 def timing(f):
@@ -73,6 +77,36 @@ def factorial_dynamic(n, memory={0:1, 1:1}):
         return memory[n]
 
 
+def create_record(index_):
+    data_dict = dict()
+    data_dict['id'] = index_
+    data_dict['name'] = ''.join([ascii_lowercase[random.randint(0, len(ascii_lowercase) - 1)] for i in range(5)])
+    data_dict['records'] = list()
+
+    return data_dict
+
+
+def recursive_update(mega_list, depth=0):
+    depth = depth
+    if depth < 2:
+        for object_ in mega_list:
+            # records_ = object_.get('records', []) or []
+            collected = []
+            for i in range(3):
+                max_list_index = len(mega_list) - 1
+                random_idx_ = random.randint(0, max_list_index)
+                random_obj_ = dict(mega_list[random_idx_])
+                collected.append(random_obj_)
+
+            object_['records'] = list(collected)
+            # records_ = object_['records']
+            print(depth, object_['id'])
+            # pprint(object_)
+            records_ = recursive_update(object_['records'], depth + 1)
+
+    return mega_list
+
+
 if __name__ == '__main__':
     sys.setrecursionlimit(12000)
     recursive_func(9, 0)
@@ -92,4 +126,16 @@ if __name__ == '__main__':
     factorial_12 = factorial_dynamic(120, memory=dict({0: 1, 1: 1}))
     print(factorial_12)
 
+    object_list = []
+    for e in range(100):
+        rec = create_record(e)
+        object_list.append(rec)
 
+    # pprint(object_list)
+    object_list = recursive_update(object_list)
+    # pprint(object_list)
+
+    with open('homework_recursion.json', 'w') as f:
+        # json.dump(object_list, f)
+        file_data = json.dumps(object_list[:50])
+        f.write(file_data)
