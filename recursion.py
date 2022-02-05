@@ -5,4 +5,6 @@ def recursive_func(number):
 
     return number
 
-recursive_func(9)
+
+if __name__ == '__main__':
+    recursive_func(9)
