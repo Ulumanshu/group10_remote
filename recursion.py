@@ -88,21 +88,26 @@ def create_record(index_):
 
 def recursive_update(mega_list, depth=0):
     depth = depth
-    if depth < 2:
-        for object_ in mega_list:
+    if depth <= 3:
+        for nr, object_ in enumerate(mega_list):
             # records_ = object_.get('records', []) or []
             collected = []
-            for i in range(3):
+            for i in range(2 * 6 - depth):
                 max_list_index = len(mega_list) - 1
                 random_idx_ = random.randint(0, max_list_index)
                 random_obj_ = dict(mega_list[random_idx_])
-                collected.append(random_obj_)
+                r_obj_id = random_obj_.get('id')
+                collected.append(create_record(r_obj_id))
 
             object_['records'] = list(collected)
             # records_ = object_['records']
-            print(depth, object_['id'])
+            # print(depth, object_['id'])
             # pprint(object_)
-            records_ = recursive_update(object_['records'], depth + 1)
+            if object_['records']:
+                records_ = recursive_update(object_['records'], depth + 1)
+
+            if depth == 0:
+                print(nr, len(mega_list))
 
     return mega_list
 
@@ -137,5 +142,5 @@ if __name__ == '__main__':
 
     with open('homework_recursion.json', 'w') as f:
         # json.dump(object_list, f)
-        file_data = json.dumps(object_list[:50])
+        file_data = json.dumps(object_list)
         f.write(file_data)
