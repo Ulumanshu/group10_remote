@@ -24,23 +24,24 @@ def recursive_search(mega_list, search_ids, plot_, depth=0, x_parent=False):
         # records_ = object_.get('records', []) or [
         child_records_ = object_['records']
         object_id = object_['id']
-        parent_x = x_parent and x_parent or nr * 10
+        parent_x = x_parent and x_parent or nr * 40
+        y_min = depth * 2
+        y_max = y_min + 2
+        x_min = parent_x
+        x_max = parent_x + ((nr - (len(mega_list) / 2)) * 32)
         if object_id in search_ids:
             res.append(object_)
-            y_min = depth * 4
-            y_max = (depth * 4) + 4
-            x_min = parent_x
-            x_max = parent_x + (nr - (len(mega_list) / 2))
+
             if depth == 0:
-                plot_.vlines(x=parent_x, ymin=y_min, ymax=y_max, linewidth=2, color='r')
+                plot_.vlines(x=x_min, ymin=y_min, ymax=y_max, linewidth=1, color='r')
             else:
                 x_values = [x_min, x_max]
                 y_values = [y_min, y_max]
-                plot_.plot(x_values, y_values, linewidth=0.125, color='red')
+                plot_.plot(x_values, y_values, linewidth=1, color='red')
 
         else:
             if depth == 0:
-                plot_.vlines(x=nr * 2, ymin=depth * 4, ymax=(depth * 4) + 4, linewidth=0.125, color='g')
+                plot_.vlines(x=x_min, ymin=y_min, ymax=y_max, linewidth=1, color='g')
 
         if child_records_ and depth <= 2:
             found_child_records_ = recursive_search(child_records_, search_ids, plot, depth + 1, parent_x)
