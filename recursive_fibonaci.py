@@ -17,6 +17,7 @@ def timing(f):
 
     return wrap
 
+
 # @timing
 def recur_fibo(n):
    if n <= 1:

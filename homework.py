@@ -18,33 +18,77 @@ self.plot.vlines(x=neuron_x_max, ymin=neuron_y_min, ymax=neuron_y_max, linewidth
 """
 
 
-def recursive_search(mega_list, search_ids, plot_, depth=0, x_parent=False):
+def recursive_search(mega_list, search_ids, plot_, depth=0, x_parent=0.00):
     res = []
     for nr, object_ in enumerate(mega_list):
-        # records_ = object_.get('records', []) or [
         child_records_ = object_['records']
         object_id = object_['id']
-        parent_x = x_parent and x_parent or nr * 100
+        parent_x = x_parent and x_parent or nr * 1000
         y_min = depth * 2
         y_max = y_min + 2
         x_min = parent_x
-        x_max = parent_x + ((nr - (len(mega_list) / 2)) * 32)
+        x_max = x_min + ((nr - (len(mega_list) / 2)) * 1200)
+        x_values = [x_min, x_max]
+        y_values = [y_min, y_max]
         if object_id in search_ids:
             res.append(object_)
-
             if depth == 0:
-                plot_.vlines(x=x_min, ymin=y_min, ymax=y_max, linewidth=0.125, color='r')
+                plot_.vlines(
+                    x=x_min,
+                    ymin=y_min,
+                    ymax=y_max,
+                    linewidth=0.125,
+                    color='red',
+                    label=f'{object_id}'
+                )
             else:
-                x_values = [x_min, x_max]
-                y_values = [y_min, y_max]
-                plot_.plot(x_values, y_values, linewidth=0.125, color='red')
+                plot_.plot(
+                    x_values,
+                    y_values,
+                    linewidth=0.125,
+                    color='red',
+                    label=f'{object_id}'
+                )
+
+        elif [rec for rec in child_records_ if rec['id'] in search_ids]:
+            if depth == 0:
+                plot_.vlines(
+                    x=x_min,
+                    ymin=y_min,
+                    ymax=y_max,
+                    linewidth=0.125,
+                    color='blue',
+                    label=f'{object_id}'
+                )
+            else:
+                plot_.plot(
+                    x_values,
+                    y_values,
+                    linewidth=0.125,
+                    color='blue',
+                    label=f'{object_id}'
+                )
 
         else:
             if depth == 0:
-                plot_.vlines(x=x_min, ymin=y_min, ymax=y_max, linewidth=0.125, color='g')
+                plot_.vlines(
+                    x=x_min,
+                    ymin=y_min,
+                    ymax=y_max,
+                    linewidth=0.125,
+                    color='g',
+                    label=f'{object_id}',
+                )
 
-        if child_records_ and depth <= 2:
-            found_child_records_ = recursive_search(child_records_, search_ids, plot, depth + 1, x_min)
+        if child_records_ and depth <= 4:
+            child_x = x_max
+            if depth == 0:
+                child_x = x_min
+            found_child_records_ = recursive_search(
+                child_records_, search_ids, plot_,
+                depth=depth + 1,
+                x_parent=child_x,
+            )
             res.extend(found_child_records_)
 
     return res
@@ -55,9 +99,10 @@ if __name__ == '__main__':
         json_data = json.loads(f.read())
 
     plot = plt
+    plot.rcParams["figure.figsize"] = (40, 10)
     figure = plot.figure()
     # pprint(json_data, indent=2)
     # ID 15 records
-    rec_15 = recursive_search(json_data, [e for e in range(1, 2)], plot)
-    print(len(rec_15))
+    rec_1 = recursive_search(json_data, [e for e in range(1, 2)], plot)
+    print(len(rec_1))
     plot.show()
